@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include rounds *.css
+recursive-include rounds *.csv
+recursive-include rounds *.html
+recursive-include rounds *.ico
+recursive-include rounds *.js
+recursive-include rounds *.json
+recursive-include rounds *.md
+recursive-include rounds *.png
+recursive-include rounds *.py
+recursive-include rounds *.svg
+recursive-include rounds *.txt
+recursive-exclude rounds *.pyc
