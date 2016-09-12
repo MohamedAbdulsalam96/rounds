@@ -7,4 +7,10 @@ import frappe
 from frappe.model.document import Document
 
 class RoundsChanted(Document):
-	pass
+	def validate(self):
+		name=frappe.get_value("Devotee",{'user':frappe.session.user},'name')
+		devotee = frappe.get_doc('Devotee', name)
+		frappe.msgprint(frappe.session.user)
+		frappe.msgprint(devotee.full_name)
+		self.db_set('devotee', devotee, update_modified=False)
+		self.db_set('devotee_name',devotee.full_name,update_modified=False)
