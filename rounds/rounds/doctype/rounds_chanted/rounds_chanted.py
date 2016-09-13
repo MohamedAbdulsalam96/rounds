@@ -8,9 +8,30 @@ from frappe.model.document import Document
 
 class RoundsChanted(Document):
 	def validate(self):
-		name=frappe.get_value("Devotee",{'user':frappe.session.user},'name')
-		devotee = frappe.get_doc('Devotee', name)
-		frappe.msgprint(frappe.session.user)
-		frappe.msgprint(devotee.full_name)
-		self.db_set('devotee', devotee, update_modified=False)
-		self.db_set('devotee_name',devotee.full_name,update_modified=False)
+		#pass
+		if self.get('__islocal'):
+			# frappe.msgprint(self.devotee)
+			# frappe.msgprint(self.date)
+
+			exist = frappe.db.sql("""
+						select * from `tabRounds Chanted`
+						where devotee=%s and date=%s""", (self.devotee, self.date), as_dict=True)
+
+			if exist:
+				# frappe.msgprint("Exists: " + exist[0]["name"])
+				frappe.throw("Rounds for this date already exist")
+			# exists = frappe.get_doc({
+			# 			"doctype": "Rounds Chanted",
+			# 			"devotee": self.devotee,
+			# 			"date": self.date
+			# 		})
+
+		# else:
+		# 	frappe.msgprint("Stored: "+self.devotee)
+
+		#pass
+		# name=frappe.get_value("Devotee",{'user':frappe.session.user},'name')
+		# devotee = frappe.get_doc('Devotee', name)
+		# frappe.msgprint(devotee.full_name)
+
+		# # self.db_set('devotee_name',devotee.full_name,update_modified=False)
