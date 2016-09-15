@@ -3,6 +3,19 @@
 
 frappe.ui.form.on('Rounds Chanted', {
 	refresh: function(frm) {
-
+        frm.add_custom_button(__("Update Balances"), function() {
+            user = frm.doc.devotee;
+            frappe.call({
+				method: "rounds.rounds.doctype.rounds_chanted.rounds_chanted.update_balance",
+				args: {
+					"user": user
+				},
+				callback: function(r) {
+					//frappe.model.sync(r.message);
+					//frm.refresh();
+					//console.log(user);
+				}
+			})
+        });
 	}
 });

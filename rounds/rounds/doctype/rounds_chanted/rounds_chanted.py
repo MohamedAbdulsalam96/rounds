@@ -5,13 +5,13 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from datetime import *
+from frappe.utils import get_datetime
+
 
 class RoundsChanted(Document):
 	def validate(self):
-		#pass
 		if self.get('__islocal'):
-			# frappe.msgprint(self.devotee)
-			# frappe.msgprint(self.date)
 			devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee',{'user':self.devotee},'name'))
 			if devotee:
 				exist = frappe.db.sql("""
@@ -19,39 +19,103 @@ class RoundsChanted(Document):
 							where devotee=%s and date=%s""", (self.devotee, self.date), as_dict=True)
 
 				if exist:
-					# frappe.msgprint("Exists: " + exist[0]["name"])
-					frappe.throw("Rounds for this date already exist")
-				# exists = frappe.get_doc({
-				# 			"doctype": "Rounds Chanted",
-				# 			"devotee": self.devotee,
-				# 			"date": self.date
-				# 		})
+					frappe.throw("Rounds for %s already exist" % self.date)
 				else:
-					# frappe.msgprint(str(devotee.daily_minimum_rounds))
-					# frappe.msgprint(str(self.minimum_number))
 					if self.minimum_number==None:
 						self.minimum_number = devotee.daily_minimum_rounds
 
 			else:
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
-		# rounds = float(self.clicker)/108
-		# frappe.msgprint("Chanted: " + str(rounds))
 
 		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
-		# frappe.msgprint(str(devotee.daily_minimum_rounds))
 
-		self.total_chanted = float(self.beads) + float(self.clicker)/108
-		self.total_names = self.total_chanted*16*108
+		chanted_today = float(self.beads) + float(self.clicker)/108
+		self.total_chanted = chanted_today
+		self.total_names = self.total_chanted * 16 * 108
 
-		# if self.minimum_number > self.total_chanted:
-		self.back_log = self.total_chanted - self.minimum_number
 
-		# else:
-		# 	frappe.msgprint("Stored: "+self.devotee)
+@frappe.whitelist(allow_guest=False)
+def update_balance(user):
+	frappe.msgprint(user)
+	first = frappe.db.sql("""select name from `tabRounds Chanted`
+    				where devotee=%s order by date LIMIT 1""", (user), as_dict=True)
+	if len(first) > 0:
+		for d in first:
+			round = frappe.get_doc('Rounds Chanted', d)
+			if round:
+				round.back_log = round.minimum_number - round.total_chanted
 
-		#pass
-		# name=frappe.get_value("Devotee",{'user':frappe.session.user},'name')
-		# devotee = frappe.get_doc('Devotee', name)
-		# frappe.msgprint(devotee.full_name)
+				if round.total_chanted > round.minimum_number:
+					if round.openning_balance_chanted > 0:
+						round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+					else:
+						round.back_log = 0
+				else:
+					round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
 
-		# # self.db_set('devotee_name',devotee.full_name,update_modified=False)
+				round.closing_balance_names = round.openning_balance_names + round.total_names
+				round.save()
+
+				closing_chanted = round.closing_balance_chanted
+				closing_names = round.closing_balance_names
+				date = frappe.utils.add_days(round.date,1)
+				# frappe.msgprint(str(type(date)))
+				# frappe.msgprint(str(type(datetime.today())))
+
+				while True:
+					if frappe.db.exists('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}):
+						round = frappe.get_doc('Rounds Chanted', frappe.get_value('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}, 'name'))
+						round.back_log = round.minimum_number - round.total_chanted
+						round.openning_balance_chanted = closing_chanted
+						round.openning_balance_names = closing_names
+						if round.total_chanted > round.minimum_number:
+							if round.openning_balance_chanted > 0:
+								round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+							else:
+								round.back_log = 0
+						else:
+							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+
+						round.closing_balance_names = round.openning_balance_names + round.total_names
+						round.save()
+
+						closing_chanted = round.closing_balance_chanted
+						closing_names = round.closing_balance_names
+					else:
+						round = frappe.new_doc("Rounds Chanted")
+						# frappe.msgprint(round.devotee)
+						round.devotee=frappe.session.user
+						round.date = date
+						round.beads=0
+						round.clicker=0
+
+						round.insert()
+
+						# frappe.msgprint(round.devotee)
+
+						round.back_log = round.minimum_number - round.total_chanted
+						round.openning_balance_chanted = closing_chanted
+						round.openning_balance_names = closing_names
+						if round.total_chanted > round.minimum_number:
+							if round.openning_balance_chanted > 0:
+								round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+							else:
+								round.back_log = 0
+						else:
+							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+
+						round.closing_balance_names = round.openning_balance_names + round.total_names
+						round.save()
+
+						closing_chanted = round.closing_balance_chanted
+						closing_names = round.closing_balance_names
+
+					if date >= frappe.utils.getdate(frappe.utils.today()):
+						break
+
+					date = frappe.utils.add_days(date, 1)
+					# frappe.msgprint(str(date))
+			else:
+				frappe.msgprint("Round not found")
+
+	frappe.msgprint("Done")
