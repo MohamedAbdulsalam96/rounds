@@ -52,7 +52,7 @@ app_license = "MIT"
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "rounds.notifications.get_notification_config"
+notification_config = "rounds.notifications.get_notification_config"
 
 # Permissions
 # -----------
