@@ -38,7 +38,8 @@ class RoundsChanted(Document):
 def update_balance(user):
 	# frappe.msgprint(user)
 	first = frappe.db.sql("""select name from `tabRounds Chanted`
-    				where devotee=%s order by date LIMIT 1""", (user), as_dict=True)
+    				where devotee=%s and start_here=0 order by date LIMIT 1""", (user), as_dict=True)
+	start_here = 1
 	if len(first) > 0:
 		for d in first:
 			round = frappe.get_doc('Rounds Chanted', d)
@@ -77,6 +78,7 @@ def update_balance(user):
 							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
 
 						round.closing_balance_names = round.openning_balance_names + round.total_names
+						round.start_here = start_here
 						round.save()
 
 						closing_chanted = round.closing_balance_chanted
@@ -88,7 +90,7 @@ def update_balance(user):
 						round.date = date
 						round.beads=0
 						round.clicker=0
-
+						start_here = 0
 						round.insert()
 
 						# frappe.msgprint(round.devotee)
