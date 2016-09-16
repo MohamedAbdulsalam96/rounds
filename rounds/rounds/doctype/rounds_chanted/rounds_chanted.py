@@ -38,7 +38,7 @@ class RoundsChanted(Document):
 def update_balance(user):
 	# frappe.msgprint(user)
 	first = frappe.db.sql("""select name, _seen from `tabRounds Chanted`
-    				where devotee=%s and start_here=0 order by date LIMIT 1""", (user), as_dict=False)
+    				where devotee=%s and start_here=0 order by date ASC LIMIT 1""", (user), as_dict=False)
 	start_here = 1
 	if len(first) > 0:
 		# frappe.msgprint(str(first))
@@ -46,7 +46,7 @@ def update_balance(user):
 			round = frappe.get_doc('Rounds Chanted', d[0])
 			if round:
 				round.back_log = round.minimum_number - round.total_chanted
-
+				# frappe.msgprint(str(round.date))
 				if round.total_chanted > round.minimum_number:
 					if round.openning_balance_chanted > 0:
 						round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
@@ -70,6 +70,7 @@ def update_balance(user):
 				# frappe.msgprint(str(type(datetime.today())))
 
 				while True:
+					# frappe.msgprint(str(round.date))
 					if frappe.db.exists('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}):
 						round = frappe.get_doc('Rounds Chanted', frappe.get_value('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}, 'name'))
 						round.back_log = round.minimum_number - round.total_chanted
@@ -95,6 +96,8 @@ def update_balance(user):
 						closing_chanted = round.closing_balance_chanted
 						closing_names = round.closing_balance_names
 					else:
+						if date >= frappe.utils.getdate(frappe.utils.today()):
+							break
 						round = frappe.new_doc("Rounds Chanted")
 						# frappe.msgprint(round.devotee)
 						round.devotee=frappe.session.user
