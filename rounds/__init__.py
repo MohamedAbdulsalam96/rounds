@@ -6,5 +6,8 @@ __version__ = '0.0.1'
 
 @frappe.whitelist(allow_guest=False)
 def reset_round_seen(name):
-    round = frappe.get_doc("Rounds Chanted", name)
-    return json.loads(round._seen)
+    seenby = '["' + frappe.session.user + '"]'
+    sql = """UPDATE `tabRounds Chanted` set _seen = '%s' where name='%s'""" % (seenby,name)
+    #seenby.append(str(frappe.session.user))
+    round = frappe.db.sql(sql, as_dict=True)
+    return len(round)#sql

@@ -17,5 +17,14 @@ frappe.ui.form.on('Rounds Chanted', {
 				}
 			})
         });
-	}
+	},
+    beads: function(frm) {
+        cur_frm.set_value("updated", true);
+    },
+    clicker: function(frm) {
+        cur_frm.set_value("updated", true);
+    },
+    minimum_number: function(frm) {
+        cur_frm.set_value("updated", true);
+    }
 });
