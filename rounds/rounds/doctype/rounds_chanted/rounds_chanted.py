@@ -36,7 +36,7 @@ class RoundsChanted(Document):
 
 @frappe.whitelist(allow_guest=False)
 def update_balance(user):
-	frappe.msgprint(user)
+	# frappe.msgprint(user)
 	first = frappe.db.sql("""select name from `tabRounds Chanted`
     				where devotee=%s order by date LIMIT 1""", (user), as_dict=True)
 	if len(first) > 0:

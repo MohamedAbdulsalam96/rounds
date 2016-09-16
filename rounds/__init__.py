@@ -13,4 +13,3 @@ def reset_round_seen(name):
     # return len(round)#sql
     round = frappe.get_doc("Rounds Chanted", name)
     round.add_seen()
-    
