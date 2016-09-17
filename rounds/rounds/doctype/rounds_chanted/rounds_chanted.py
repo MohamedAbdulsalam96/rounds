@@ -69,6 +69,9 @@ def update_balance(user):
 				else:
 					round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
 
+				if round.closing_balance_chanted <0:
+					round.closing_balance_chanted=0
+
 				round.start_here = start_here
 				round.closing_balance_names = round.openning_balance_names + round.total_names
 				# frappe.msgprint(str(d))
@@ -103,6 +106,9 @@ def update_balance(user):
 						if d[0] != None:
 							round.updated = True
 
+						if round.closing_balance_chanted < 0:
+							round.closing_balance_chanted = 0
+
 						round.closing_balance_names = round.openning_balance_names + round.total_names
 						round.start_here = start_here
 						round.save()
@@ -134,6 +140,9 @@ def update_balance(user):
 						else:
 							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
 
+						if round.closing_balance_chanted < 0:
+							round.closing_balance_chanted = 0
+							
 						round.closing_balance_names = round.openning_balance_names + round.total_names
 						round.save()
 
