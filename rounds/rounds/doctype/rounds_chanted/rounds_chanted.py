@@ -110,7 +110,7 @@ def update_balance(user):
 						closing_chanted = round.closing_balance_chanted
 						closing_names = round.closing_balance_names
 					else:
-						if date >= frappe.utils.getdate(frappe.utils.today()):
+						if date > frappe.utils.getdate(frappe.utils.today()):
 							break
 						round = frappe.new_doc("Rounds Chanted")
 						# frappe.msgprint(round.devotee)
@@ -140,10 +140,9 @@ def update_balance(user):
 						closing_chanted = round.closing_balance_chanted
 						closing_names = round.closing_balance_names
 
-					if date >= frappe.utils.getdate(frappe.utils.today()):
-						break
-
 					date = frappe.utils.add_days(date, 1)
+					if date > frappe.utils.getdate(frappe.utils.today()):
+						break
 					# frappe.msgprint(str(date))
 			else:
 				frappe.msgprint("Round not found")
