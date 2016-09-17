@@ -40,7 +40,21 @@ def update_balance(user):
 	first = frappe.db.sql("""select name, _seen from `tabRounds Chanted`
     				where devotee=%s and start_here=0 order by date ASC LIMIT 1""", (user), as_dict=False)
 	start_here = 1
-	if len(first) > 0:
+
+	if len(first) == 0:
+		first = frappe.db.sql("""select name, _seen from `tabRounds Chanted`
+	        				where devotee=%s order by date DESC LIMIT 1""", (user), as_dict=False)
+
+	if len(first) ==0:
+		round = frappe.new_doc("Rounds Chanted")
+		# frappe.msgprint(round.devotee)
+		round.devotee = frappe.session.user
+		round.date = frappe.utils.today()
+		round.beads = 0
+		round.clicker = 0
+		start_here = 0
+		round.insert()
+	else:
 		# frappe.msgprint(str(first))
 		for d in first:
 			round = frappe.get_doc('Rounds Chanted', d[0])
@@ -134,4 +148,10 @@ def update_balance(user):
 			else:
 				frappe.msgprint("Round not found")
 
-	frappe.msgprint("Done")
+
+@frappe.whitelist(allow_guest=False)
+def update_all_devotees():
+	# frappe.msgprint("Running")
+	devotees = frappe.get_all('Devotee',fields=['user'])#,ignore_permissions=True)
+	for d in devotees:
+		update_balance(d['user'])

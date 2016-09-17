@@ -13,7 +13,7 @@ frappe.ui.form.on('Rounds Chanted', {
 				callback: function(r) {
 					//frappe.model.sync(r.message);
 					//frm.refresh();
-					//console.log(user);
+					frappe.msgprint("Done");
 				}
 			})
         });
