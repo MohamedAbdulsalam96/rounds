@@ -27,15 +27,16 @@ class RoundsChanted(Document):
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
 
 			day_before = frappe.utils.add_days(self.date,-1)
-
+			# frappe.msgprint(str(day_before))
 			last_round = frappe.db.sql("""
-							select * from `tabRounds Chanted`
-							where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=True)
+							select name from `tabRounds Chanted`
+							where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=False)
+			# frappe.msgprint(str(last_round))
 			if len(last_round)>0:
 				for d in last_round:
 					round = frappe.get_doc('Rounds Chanted', d[0])
 					self.openning_balance_chanted = round.closing_balance_chanted
-					self.openning_balance_names = round.closing_balance_name
+					self.openning_balance_names = round.closing_balance_names
 
 		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
 
@@ -51,6 +52,7 @@ def update_balance(user):
     				where devotee=%s and start_here=0 order by date ASC LIMIT 1""", (user), as_dict=False)
 	start_here = 1
 
+	# frappe.msgprint(str(len(first)))
 	if len(first) == 0:
 		first = frappe.db.sql("""select name, _seen from `tabRounds Chanted`
 	        				where devotee=%s order by date DESC LIMIT 1""", (user), as_dict=False)
@@ -97,7 +99,7 @@ def update_balance(user):
 				# frappe.msgprint(str(type(datetime.today())))
 
 				while True:
-					# frappe.msgprint(str(round.date))
+					# frappe.msgprint("loop " + str(round.date))
 					if frappe.db.exists('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}):
 						round = frappe.get_doc('Rounds Chanted', frappe.get_value('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}, 'name'))
 						round.back_log = round.minimum_number - round.total_chanted
