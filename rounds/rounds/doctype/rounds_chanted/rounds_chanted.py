@@ -23,9 +23,19 @@ class RoundsChanted(Document):
 				else:
 					if self.minimum_number==None:
 						self.minimum_number = devotee.daily_minimum_rounds
-
 			else:
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
+
+			day_before = frappe.utils.add_days(self.date,-1)
+
+			last_round = frappe.db.sql("""
+							select * from `tabRounds Chanted`
+							where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=True)
+			if len(last_round)>0:
+				for d in last_round:
+					round = frappe.get_doc('Rounds Chanted', d[0])
+					self.openning_balance_chanted = round.closing_balance_chanted
+					self.openning_balance_names = round.closing_balance_name
 
 		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
 
@@ -142,7 +152,7 @@ def update_balance(user):
 
 						if round.closing_balance_chanted < 0:
 							round.closing_balance_chanted = 0
-							
+
 						round.closing_balance_names = round.openning_balance_names + round.total_names
 						round.save()
 
