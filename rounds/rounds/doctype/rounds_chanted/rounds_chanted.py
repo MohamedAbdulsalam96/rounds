@@ -87,8 +87,8 @@ def update_balance(user):
 				round.start_here = start_here
 				round.closing_balance_names = round.openning_balance_names + round.total_names
 				# frappe.msgprint(str(d))
-				if d[1] !=None:
-					round.updated = True
+				# if d[1] !=None:
+					# round.updated = True
 
 				round.save()
 
@@ -115,8 +115,8 @@ def update_balance(user):
 
 						seen = frappe.db.sql("""select _seen from `tabRounds Chanted` where name=%s""", (round.name), as_dict=False)
 						# frappe.msgprint(str(seen))
-						if d[0] != None:
-							round.updated = True
+						# if d[0] != None:
+						# 	round.updated = True
 
 						if round.closing_balance_chanted < 0:
 							round.closing_balance_chanted = 0
