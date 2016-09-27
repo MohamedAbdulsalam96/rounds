@@ -27,7 +27,7 @@ class RoundsChanted(Document):
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
 
 			if self.beads <> '':
-				self.beads = eval(self.beads)
+				self.beads = self.beads
 
 			day_before = frappe.utils.add_days(self.date,-1)
 			# frappe.msgprint(str(day_before))
