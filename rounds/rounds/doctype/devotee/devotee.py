@@ -30,6 +30,11 @@ class Devotee(Document):
 				self.balance_as_at = d[1]
 				self.current_balance = d[0]
 
+		max = frappe.db.sql("""select max(days_in_a_row_max) FROM `tabRounds Chanted`""", as_dict=False)
+		min = frappe.db.sql("""select max(days_in_a_row_min) FROM `tabRounds Chanted`""", as_dict=False)
+
+		self.days_in_a_row_max = max[0][0]
+		self.days_in_a_row_min = min[0][0]
 
 @frappe.whitelist(allow_guest=False)
 def update_goal_date(user, target):
