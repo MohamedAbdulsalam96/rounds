@@ -74,12 +74,6 @@ def update_balance(user):
 		for d in first:
 			round = frappe.get_doc('Rounds Chanted', d[0])
 			if round:
-				if round.days_in_a_row_max == None:
-					round.days_in_a_row_max = 0
-
-				if round.days_in_a_row_min == None:
-					round.days_in_a_row_min = 0
-
 				round.back_log = round.minimum_number - round.total_chanted
 				# frappe.msgprint(str(round.date))
 				if round.total_chanted > round.minimum_number:
@@ -90,13 +84,6 @@ def update_balance(user):
 				else:
 					round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
 
-				if round.total_chanted >= round.minimum_number:
-					round.days_in_a_row_min = 0
-					round.days_in_a_row_max = round.days_in_a_row_max + 1
-				else:
-					round.days_in_a_row_min = round.days_in_a_row_min + 1
-					round.days_in_a_row_max = 0
-
 				if round.closing_balance_chanted <0:
 					round.closing_balance_chanted=0
 
@@ -106,13 +93,39 @@ def update_balance(user):
 				# if d[1] !=None:
 					# round.updated = True
 
+				if round.days_in_a_row_max == None:
+					round.days_in_a_row_max = 0
+
+				if round.days_in_a_row_min == None:
+					round.days_in_a_row_min = 0
+
+
+				date = frappe.utils.add_days(round.date, -1)
+				exists = frappe.db.exists('Rounds Chanted', {'devotee': frappe.session.user, 'date': date})
+				if exists:
+					previous_round = frappe.get_doc('Rounds Chanted', exists)
+					if round.total_chanted >= round.minimum_number:
+						round.days_in_a_row_min = 0
+						round.days_in_a_row_max = previous_round.days_in_a_row_max + 1
+					else:
+						round.days_in_a_row_min = previous_round.days_in_a_row_min + 1
+						round.days_in_a_row_max = 0
+				else:
+					if round.total_chanted >= round.minimum_number:
+						round.days_in_a_row_min = 0
+						round.days_in_a_row_max = round.days_in_a_row_max + 1
+					else:
+						round.days_in_a_row_min = round.days_in_a_row_min + 1
+						round.days_in_a_row_max = 0
+
+				rounds_max = round.days_in_a_row_max
+				rounds_min = round.days_in_a_row_min
+
 				round.save()
 
 				closing_chanted = round.closing_balance_chanted
 				closing_names = round.closing_balance_names
-				date = frappe.utils.add_days(round.date,1)
-				rounds_max = round.days_in_a_row_max
-				rounds_min = round.days_in_a_row_min
+				date = frappe.utils.add_days(round.date, 1)
 				# frappe.msgprint(str(type(date)))
 				# frappe.msgprint(str(type(datetime.today())))
 
