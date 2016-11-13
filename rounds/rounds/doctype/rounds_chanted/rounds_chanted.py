@@ -111,7 +111,7 @@ def update_balance(user):
 						round.days_in_a_row_min = previous_round.days_in_a_row_min + 1
 						round.days_in_a_row_max = 0
 				else:
-					if round.total_chanpassted >= round.minimum_number:
+					if round.total_chanted >= round.minimum_number:
 						round.days_in_a_row_min = 0
 						round.days_in_a_row_max = round.days_in_a_row_max + 1
 					else:
