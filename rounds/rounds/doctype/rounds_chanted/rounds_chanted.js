@@ -13,8 +13,10 @@ frappe.ui.form.on('Rounds Chanted', {
 				callback: function(r) {
 					//frappe.model.sync(r.message);
 					//frm.refresh();
-					frappe.msgprint("Done");
-				}
+					//frappe.msgprint("Done");
+				},
+				freeze: true,
+				freeze_message: 'Calculating Balances....'
 			})
         });
 	},
