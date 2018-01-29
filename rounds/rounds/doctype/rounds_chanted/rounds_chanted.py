@@ -40,12 +40,21 @@ class RoundsChanted(Document):
 					round = frappe.get_doc('Rounds Chanted', d[0])
 					self.openning_balance_chanted = round.closing_balance_chanted
 					self.openning_balance_names = round.closing_balance_names
-
+		
+		if self.reset_to_zero==True:
+			#self.openning_balance_chanted = 0
+			self.openning_balance_names = 0
+			self.start_here = 0
+		
 		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
 
 		chanted_today = float(self.beads) + float(self.clicker)/108
 		self.total_chanted = chanted_today
 		self.total_names = self.total_chanted * 16 * 108
+		#self.closing_balance_chanted =  self.openning_balance_chanted + self.total_chanted
+		self.closing_balance_names = self.openning_balance_names + self.total_names
+
+
 
 
 @frappe.whitelist(allow_guest=False)
@@ -75,6 +84,10 @@ def update_balance(user):
 			round = frappe.get_doc('Rounds Chanted', d[0])
 			if round:
 				round.back_log = round.minimum_number - round.total_chanted
+				if round.reset_to_zero == True:
+					#round.openning_balance_chanted = 0
+					round.openning_balance_names = 0
+					
 				# frappe.msgprint(str(round.date))
 				if round.total_chanted > round.minimum_number:
 					if round.openning_balance_chanted > 0:
