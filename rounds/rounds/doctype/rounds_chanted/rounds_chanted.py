@@ -146,7 +146,7 @@ def update_balance(user):
 
 				rounds_max = round.days_in_a_row_max
 				rounds_min = round.days_in_a_row_min
-				round.updated = false
+				round.updated = 0
 				round.save()
 
 				closing_chanted = round.closing_balance_chanted
@@ -193,10 +193,9 @@ def update_balance(user):
 							round.closing_balance_chanted = 0
 
 						round.closing_balance_names = round.openning_balance_names + round.total_names
-						round.start_here = start_here
 						rounds_max = round.days_in_a_row_max
 						rounds_min = round.days_in_a_row_min
-						round.updated = false
+						round.updated = 0
 						round.save()
 
 						closing_chanted = round.closing_balance_chanted
@@ -236,7 +235,7 @@ def update_balance(user):
 							round.closing_balance_chanted = 0
 
 						round.closing_balance_names = round.openning_balance_names + round.total_names
-						round.updated = false
+						round.updated = 0
 						round.save()
 
 						closing_chanted = round.closing_balance_chanted
