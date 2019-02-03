@@ -22,14 +22,14 @@ frappe.ui.form.on('Rounds Chanted', {
 	},
     beads: function(frm) {
         cur_frm.set_value("updated", true);
-        cur_frm.set_value("start_here", false);
+        //cur_frm.set_value("start_here", false);
     },
     clicker: function(frm) {
         cur_frm.set_value("updated", true);
-        cur_frm.set_value("start_here", false);
+        //cur_frm.set_value("start_here", false);
     },
     minimum_number: function(frm) {
         cur_frm.set_value("updated", true);
-        cur_frm.set_value("start_here", false);
+        //cur_frm.set_value("start_here", false);
     }
 });
