@@ -81,10 +81,10 @@ notification_config = "rounds.rounds.notifications.get_notification_config"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"rounds.tasks.all"
-# 	],
+scheduler_events = {
+ 	"all": [
+ 		"rounds.rounds.doctype.rounds_chanted.rounds_chanted.update_all_devotees"
+ 	]
 # 	"daily": [
 # 		"rounds.tasks.daily"
 # 	],
@@ -97,7 +97,7 @@ notification_config = "rounds.rounds.notifications.get_notification_config"
 # 	"monthly": [
 # 		"rounds.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
