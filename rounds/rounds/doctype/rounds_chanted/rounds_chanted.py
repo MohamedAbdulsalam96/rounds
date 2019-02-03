@@ -52,7 +52,7 @@ class RoundsChanted(Document):
 			#self.openning_balance_chanted = 0
 			self.openning_balance_names = 0
 		
-		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
+		#devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
 
 		chanted_today = float(self.beads) + float(self.clicker)/108
 		self.total_chanted = chanted_today
@@ -60,7 +60,7 @@ class RoundsChanted(Document):
 		self.closing_balance_chanted =  self.openning_balance_chanted + self.total_chanted
 		self.closing_balance_names = self.openning_balance_names + self.total_names
 		self.back_log = self.total_chanted-self.minimum_number
-		if self.back_log>=self.minimum_number:
+		if self.back_log>=0:
 			self.days_in_a_row_max = previous_days_max+1
 		else:
 			self.days_in_a_row_max=0
