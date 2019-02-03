@@ -60,11 +60,11 @@ class RoundsChanted(Document):
 		self.closing_balance_chanted =  self.openning_balance_chanted + self.total_chanted
 		self.closing_balance_names = self.openning_balance_names + self.total_names
 		self.back_log = self.total_chanted-self.minimum_number
-		if self.back_log>=0:
-			self.days_in_a_row_max = previous_days_max+1
+		if self.back_log >= 0:
+			self.days_in_a_row_max = previous_days_max + 1
 		else:
-			self.days_in_a_row_max=0
-			self.days_in_a_row_min=previous_days_min+1
+			self.days_in_a_row_max = 0
+			self.days_in_a_row_min = previous_days_min + 1
 
 
 
