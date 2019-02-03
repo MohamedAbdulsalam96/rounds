@@ -238,7 +238,7 @@ def update_balance(user):
 					if date > frappe.utils.getdate(frappe.utils.today()):
 						break
 					
-					if count>100:
+					if count>300:
 						round.updated = 1
 						round.save()
 						break
