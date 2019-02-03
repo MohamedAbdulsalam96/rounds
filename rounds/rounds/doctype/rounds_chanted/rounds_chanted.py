@@ -51,7 +51,6 @@ class RoundsChanted(Document):
 		if self.reset_to_zero==True:
 			#self.openning_balance_chanted = 0
 			self.openning_balance_names = 0
-			self.start_here = 0
 		
 		devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
 
@@ -66,7 +65,8 @@ class RoundsChanted(Document):
 		else:
 			self.days_in_a_row_max=0
 			self.days_in_a_row_min=previous_days_min+1
-
+		self.updated = 0
+		self.start_here = 0
 
 @frappe.whitelist(allow_guest=False)
 def update_balance(user):
