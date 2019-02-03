@@ -97,7 +97,7 @@ notification_config = "rounds.rounds.notifications.get_notification_config"
 # 	"monthly": [
 # 		"rounds.tasks.monthly"
 # 	]
-}
+#}
 
 # Testing
 # -------
