@@ -65,8 +65,8 @@ class RoundsChanted(Document):
 		else:
 			self.days_in_a_row_max=0
 			self.days_in_a_row_min=previous_days_min+1
-		self.updated = 0
-		self.start_here = 0
+
+
 
 @frappe.whitelist(allow_guest=False)
 def update_balance(user):
