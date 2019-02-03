@@ -148,10 +148,10 @@ def update_balance(user):
 				closing_chanted = round.closing_balance_chanted
 				closing_names = round.closing_balance_names
 				date = frappe.utils.add_days(round.date, 1)
-				# frappe.msgprint(str(type(date)))
-				# frappe.msgprint(str(type(datetime.today())))
 
+				count = 0
 				while True:
+					count = count + 1
 					# frappe.msgprint("loop " + str(round.date))
 					if frappe.db.exists('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}):
 						round = frappe.get_doc('Rounds Chanted', frappe.get_value('Rounds Chanted', {'devotee': frappe.session.user, 'date': date}, 'name'))
@@ -179,11 +179,6 @@ def update_balance(user):
 						else:
 							round.days_in_a_row_min = rounds_min + 1
 							round.days_in_a_row_max = 0
-
-						seen = frappe.db.sql("""select _seen from `tabRounds Chanted` where name=%s""", (round.name), as_dict=False)
-						# frappe.msgprint(str(seen))
-						# if d[0] != None:
-						# 	round.updated = True
 
 						if round.closing_balance_chanted < 0:
 							round.closing_balance_chanted = 0
@@ -241,6 +236,11 @@ def update_balance(user):
 
 					date = frappe.utils.add_days(date, 1)
 					if date > frappe.utils.getdate(frappe.utils.today()):
+						break
+					
+					if count>100:
+						round.updated = 1
+						round.save()
 						break
 					# frappe.msgprint(str(date))
 			else:
