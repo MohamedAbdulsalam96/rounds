@@ -58,12 +58,12 @@ class RoundsChanted(Document):
 		
 		if self.reset_to_zero==True:
 			self.openning_balance_names = 0
+
+		if (self.openning_balance_chanted - self.back_log) <=0:
+			self.closing_balance_chanted =  0
+		else:
+			self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log		
 		
-		self.openning_balance_chanted >0:
-			if (self.openning_balance_chanted - self.back_log) <=0:
-				self.closing_balance_chanted =  0
-			else:
-				self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log		
 		self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log
 		self.closing_balance_names = self.openning_balance_names + self.total_names
 		
