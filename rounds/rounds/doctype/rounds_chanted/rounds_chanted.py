@@ -114,7 +114,6 @@ def update_balance(user):
 				if round.closing_balance_chanted <0:
 					round.closing_balance_chanted=0
 
-				round.start_here = start_here
 				round.closing_balance_names = round.openning_balance_names + round.total_names
 				# frappe.msgprint(str(d))
 				# if d[1] !=None:
