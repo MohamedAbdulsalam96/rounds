@@ -13,7 +13,7 @@ class RoundsChanted(Document):
 	def validate(self):
 		previous_days_min = 0
 		previous_days_max = 0
-		if self.get('__islocal'):
+		if self.is_new():
 			devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee',{'user':self.devotee},'name'))
 			if devotee:
 				exist = frappe.db.sql("""
@@ -28,25 +28,25 @@ class RoundsChanted(Document):
 			else:
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
 
-			if self.beads <> '':
-				self.beads = self.beads
+		#if self.beads <> '':
+		#	self.beads = self.beads
 
-			day_before = frappe.utils.add_days(self.date,-1)
-			# frappe.msgprint(str(day_before))
-			last_round = frappe.db.sql("""
-							select name from `tabRounds Chanted`
-							where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=False)
-			# frappe.msgprint(str(last_round))
-			if len(last_round)>0:
-				for d in last_round:
-					round = frappe.get_doc('Rounds Chanted', d[0])
-					self.openning_balance_chanted = round.closing_balance_chanted
-					self.openning_balance_names = round.closing_balance_names
-					previous_days_max = round.days_in_a_row_max
-					previous_days_min = round.days_in_a_row_min
-			else:
-				self.openning_balance_chanted = 0
-				self.openning_balance_names = 0
+		day_before = frappe.utils.add_days(self.date,-1)
+		# frappe.msgprint(str(day_before))
+		last_round = frappe.db.sql("""
+						select name from `tabRounds Chanted`
+						where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=False)
+		# frappe.msgprint(str(last_round))
+		if len(last_round)>0:
+			for d in last_round:
+				round = frappe.get_doc('Rounds Chanted', d[0])
+				self.openning_balance_chanted = round.closing_balance_chanted
+				self.openning_balance_names = round.closing_balance_names
+				previous_days_max = round.days_in_a_row_max
+				previous_days_min = round.days_in_a_row_min
+		else:
+			self.openning_balance_chanted = 0
+			self.openning_balance_names = 0
 		
 		if self.reset_to_zero==True:
 			#self.openning_balance_chanted = 0
