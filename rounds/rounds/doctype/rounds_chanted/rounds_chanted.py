@@ -64,7 +64,7 @@ class RoundsChanted(Document):
 		else:
 			self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log		
 		
-		self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log
+		
 		self.closing_balance_names = self.openning_balance_names + self.total_names
 		
 		
