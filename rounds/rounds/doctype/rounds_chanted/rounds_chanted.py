@@ -11,8 +11,6 @@ from frappe.utils import get_datetime
 
 class RoundsChanted(Document):
 	def validate(self):
-		previous_days_min = 0
-		previous_days_max = 0
 		if self.is_new():
 			devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee',{'user':self.devotee},'name'))
 			if devotee:
@@ -28,15 +26,11 @@ class RoundsChanted(Document):
 			else:
 				frappe.throw("You are not registered as a devotee that can log rounds, please contact the system administrator")
 
-		#if self.beads <> '':
-		#	self.beads = self.beads
-
 		day_before = frappe.utils.add_days(self.date,-1)
-		# frappe.msgprint(str(day_before))
+		
 		last_round = frappe.db.sql("""
 						select name from `tabRounds Chanted`
 						where devotee=%s and date=%s""", (self.devotee, day_before), as_dict=False)
-		# frappe.msgprint(str(last_round))
 
 		chanted_today = float(self.beads) + float(self.clicker)/108
 		self.total_chanted = chanted_today
@@ -48,7 +42,7 @@ class RoundsChanted(Document):
 				round = frappe.get_doc('Rounds Chanted', d[0])
 				self.openning_balance_chanted = round.closing_balance_chanted
 				self.openning_balance_names = round.closing_balance_names
-				if self.back_log >= 0:
+				if self.total_chanted >= self.minimum_number:
 					self.days_in_a_row_max = round.days_in_a_row_max + 1
 				else:
 					self.days_in_a_row_max = 0
@@ -56,19 +50,21 @@ class RoundsChanted(Document):
 		else:
 			self.openning_balance_chanted = 0
 			self.openning_balance_names = 0
-			if self.back_log >= 0:
+			if self.total_chanted >= self.minimum_number:
 					self.days_in_a_row_max = 1
-			else:
-				self.days_in_a_row_max = 0
-				self.days_in_a_row_min = 1
+				else:
+					self.days_in_a_row_max = 0
+					self.days_in_a_row_min = 1
 		
 		if self.reset_to_zero==True:
-			#self.openning_balance_chanted = 0
 			self.openning_balance_names = 0
 		
-		#devotee = frappe.get_doc('Devotee', frappe.get_value('Devotee', {'user': self.devotee}, 'name'))
-		
-		self.closing_balance_chanted =  self.openning_balance_chanted + self.total_chanted
+		self.openning_balance_chanted >0:
+			if (self.openning_balance_chanted - self.back_log) <=0:
+				self.closing_balance_chanted =  0
+			else:
+				self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log		
+		self.closing_balance_chanted =  self.openning_balance_chanted - self.back_log
 		self.closing_balance_names = self.openning_balance_names + self.total_names
 		
 		
@@ -105,11 +101,11 @@ def update_balance(user):
 				# frappe.msgprint(str(round.date))
 				if round.total_chanted > round.minimum_number:
 					if round.openning_balance_chanted > 0:
-						round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+						round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 					else:
 						round.back_log = 0
 				else:
-					round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+					round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 
 				if round.closing_balance_chanted <0:
 					round.closing_balance_chanted=0
@@ -171,11 +167,11 @@ def update_balance(user):
 
 						if round.total_chanted > round.minimum_number:
 							if round.openning_balance_chanted > 0:
-								round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+								round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 							else:
 								round.back_log = 0
 						else:
-							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+							round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 
 						if round.total_chanted >= round.minimum_number:
 							round.days_in_a_row_min = 0
@@ -218,11 +214,11 @@ def update_balance(user):
 						round.openning_balance_names = closing_names
 						if round.total_chanted > round.minimum_number:
 							if round.openning_balance_chanted > 0:
-								round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+								round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 							else:
-								round.back_log = 0
+								round.closing_balance_chanted = 0
 						else:
-							round.closing_balance_chanted = round.openning_balance_chanted + round.back_log
+							round.closing_balance_chanted = round.openning_balance_chanted - round.back_log
 
 						if round.total_chanted >= round.minimum_number:
 							round.days_in_a_row_min = 0
