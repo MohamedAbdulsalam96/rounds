@@ -58,9 +58,9 @@ class RoundsChanted(Document):
 			self.openning_balance_names = 0
 			if self.back_log >= 0:
 					self.days_in_a_row_max = 1
-				else:
-					self.days_in_a_row_max = 0
-					self.days_in_a_row_min = 1
+			else:
+				self.days_in_a_row_max = 0
+				self.days_in_a_row_min = 1
 		
 		if self.reset_to_zero==True:
 			#self.openning_balance_chanted = 0
