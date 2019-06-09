@@ -10,7 +10,7 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
-					"name": "Rounds"
+					"name": "Rounds Chanted"
 				},
 			]
 		},
@@ -19,7 +19,7 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
-					"name": "Devotees"
+					"name": "Devotee"
 				},
 			]
 		},
